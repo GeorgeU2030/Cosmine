@@ -1,6 +1,7 @@
 <script setup>
 import Navbar from '../Components/Navbar.vue';
 import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     item: Object,
@@ -8,9 +9,38 @@ const props = defineProps({
 });
 
 const selectedRating = ref(null);
+const loading = ref(false);
+const error = ref(null);
 
 const selectRating = (rating) => {
     selectedRating.value = rating;
+};
+
+const submitRating = () => {
+    if (!selectedRating.value) {
+        error.value = 'Please select a rating first';
+        return;
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    router.post('/save-rating', {
+        id: props.item.id,
+        type: props.type,
+        rating: selectedRating.value,
+        name: props.item.title || props.item.name,
+        cover: props.item.poster_path,
+        release_date: props.item.release_date || props.item.first_air_date
+    }, {
+        onSuccess: () => {
+            loading.value = false;
+        },
+        onError: (errors) => {
+            loading.value = false;
+            error.value = Object.values(errors)[0];
+        }
+    });
 };
 
 
@@ -19,7 +49,11 @@ const selectRating = (rating) => {
 <template>
     <div class="flex flex-col min-h-screen">
         <Navbar />
+        
         <div class="container mx-auto px-4 py-8 bg-slate-200 flex-grow">
+            <div v-if="$page.props.flash.message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-4 mt-4 mb-4" role="alert">
+                <span class="block sm:inline">{{ $page.props.flash.message }}</span>
+            </div>
             <div v-if="item" class="flex flex-col md:flex-row gap-8">
                 <div class="w-full md:w-1/3 flex items-center justify-center">
                     <img 
@@ -162,9 +196,16 @@ const selectRating = (rating) => {
                         </div>
                     </div>
                     <div class="flex items-center justify-center mt-3">
-                        <button class="w-28 flex items-center justify-center font-bold rounded-lg p-2 mb-6 bg-maincolor text-white hover:bg-violet-500">
-                            Rate
+                        <button 
+                            @click="submitRating"
+                            :disabled="loading"
+                            class="w-28 flex items-center justify-center font-bold rounded-lg p-2 mb-6 bg-maincolor text-white hover:bg-violet-500 disabled:opacity-50"
+                        >
+                            {{ loading ? 'Saving...' : 'Rate' }}
                         </button>
+                    </div>
+                    <div v-if="error" class="text-red-500 text-center mb-4">
+                        {{ error }}
                     </div>
                     <div v-if="type == 'tv' && item.number_of_seasons" class="mb-6 flex flex-col">
                         <h2 class="text-xl font-semibold mb-2">Seasons</h2>

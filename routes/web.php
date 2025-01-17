@@ -15,6 +15,10 @@ Route::inertia('/login', 'Auth/Login')->name('login');
 
 Route::inertia('/home', 'Home')->name('home');
 
+Route::inertia('/movies', 'Movies')->name('movies');
+
+Route::inertia('/series', 'Series')->name('series');
+
 Route::inertia('/detail/{type}/{id}', 'Detail')->name('detail');
 
 // controllers
@@ -25,8 +29,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::post('/save-rating', [TMDBController::class, 'saveRating'])->name('save.rating');
+
 // get data
 
 Route::get('/home', [TMDBController::class, 'index']);
 
-Route::get('/detail/{type}/{id}', [TMDBController::class, 'detail']);
+Route::get('/detail/{type}/{id}', [TMDBController::class, 'detail'])->name('detail');

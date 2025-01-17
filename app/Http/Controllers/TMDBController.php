@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
+use App\Models\Movie;
+use App\Models\Series;
 
 class TMDBController extends Controller
 {
@@ -59,5 +61,62 @@ class TMDBController extends Controller
             ]);
         }
         
+    }
+
+    public function saveRating(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:movie,tv',
+            'rating' => 'required|string',
+            'name' => 'required|string',
+            'cover' => 'required|string',
+            'release_date' => 'required|string',
+        ]);
+
+
+        if ($validated['type'] == 'movie') {
+            
+            $movie = Movie::where('name', $validated['name'])->first();
+    
+            if (!$movie) {
+                $movie = Movie::create([
+                    'name' => $validated['name'],
+                    'cover' => $validated['cover'],
+                    'release_date' => $validated['release_date'],
+                ]);
+                $movie->rankings()->create([
+                    'user_id' => auth()->user()->id,
+                    'rating' => $validated['rating'],
+                    'rankable_id' => $movie->id,
+                    'rankable_type' => Movie::class,  
+                ]);
+                return redirect()->intended('/home');
+            } else {
+                return redirect()->back()->with('message', 'This movie has already been ranked!');
+            }
+    
+        }
+        else if ($validated['type'] == 'tv') {
+            
+            $tv = Series::where('name', $validated['name'])->first();
+    
+            if (!$tv) {
+                $tv = Series::create([
+                    'name' => $validated['name'],
+                    'cover' => $validated['cover'],
+                    'release_date' => $validated['release_date'],
+                ]);
+                $tv->rankings()->create([
+                    'user_id' => auth()->user()->id,
+                    'rating' => $validated['rating'],
+                    'rankable_id' => $tv->id,
+                    'rankable_type' => Series::class,  
+                ]);
+            }
+    
+    
+            return redirect()->route('home');
+        }
+
     }
 }
