@@ -19,12 +19,8 @@ const submit = () => {
     console.log('Enviando datos:', form.data())
     
     form.post(route('register'), {
-        onError: (errors) => {
-            console.error('Errores de validación:', errors)
+        onError: () => {
             form.reset('password', 'password_confirmation')
-        },
-        onSuccess: () => {
-            console.log('Usuario registrado correctamente')
         },
         preserveScroll: true,
     })
