@@ -3,13 +3,12 @@ import Navbar from '../Components/Navbar.vue';
 import Footer from '../Components/Footer.vue';
 
 import { defineProps } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
   popularMovies: Array,
   popularTVShows: Array,
 });
-
-console.log(props.popularMovies);
 
 </script>
 <template>
@@ -22,8 +21,11 @@ console.log(props.popularMovies);
                 <!-- Popular Movies Section -->
                 <div class="mb-8">
                     <h2 class="text-xl font-semibold mb-4">Popular Movies</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                        <div v-for="movie in popularMovies" :key="movie.id" class="bg-white rounded-lg shadow-md overflow-hidden border border-maincolor cursor-pointer">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                        <div v-for="movie in popularMovies" 
+                             :key="movie.id" 
+                             @click="() => router.visit(`/detail/movie/${movie.id}`)"
+                             class="bg-white rounded-lg shadow-md overflow-hidden border border-maincolor cursor-pointer hover:shadow-xl transition-shadow">
                             <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="w-full h-72 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold h-12">{{ movie.title }}</h3>
@@ -39,8 +41,11 @@ console.log(props.popularMovies);
                 <!-- Popular TV Shows Section -->
                 <div class="mt-16">
                     <h2 class="text-xl font-semibold mb-4">Popular TV Shows</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                        <div v-for="show in popularTVShows" :key="show.id" class="bg-white rounded-lg shadow-md overflow-hidden border border-maincolor cursor-pointer">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                        <div v-for="show in popularTVShows" 
+                             :key="show.id" 
+                             @click="() => router.visit(`/detail/tv/${show.id}`)"
+                             class="bg-white rounded-lg shadow-md overflow-hidden border border-maincolor cursor-pointer hover:shadow-xl transition-shadow">
                             <img :src="'https://image.tmdb.org/t/p/w500' + show.poster_path" :alt="show.name" class="w-full h-72 object-cover">
                             <div class="p-4">
                                 <h3 class="font-bold h-12">{{ show.name }}</h3>
