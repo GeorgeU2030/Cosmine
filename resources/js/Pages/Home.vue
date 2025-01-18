@@ -36,7 +36,7 @@ const searchMedia = async () => {
         <Navbar />
         <div class="flex flex-col lg:flex-row flex-grow w-full p-6">
             <div class="w-full">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex lg:flex-row flex-col items-center justify-between mb-6">
                     <Link href="/home" class="font-bold mb-6 text-2xl text-maincolor">Welcome {{ $page.props.auth.user.name }}</Link>
                     <div class="flex gap-2">
                         <input 

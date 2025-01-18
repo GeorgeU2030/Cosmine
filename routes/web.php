@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TMDBController;
+use App\Http\Controllers\RankingController;
 
 // views
 
@@ -38,3 +39,7 @@ Route::post('/save-rating', [TMDBController::class, 'saveRating'])->name('save.r
 Route::get('/home', [TMDBController::class, 'index']);
 
 Route::get('/detail/{type}/{id}', [TMDBController::class, 'detail'])->name('detail');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/movie-rankings', [RankingController::class, 'getMovieRankings'])->name('movie.rankings');
+});
