@@ -29,6 +29,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/api/search', [TMDBController::class, 'search']);
+
 Route::post('/save-rating', [TMDBController::class, 'saveRating'])->name('save.rating');
 
 // get data

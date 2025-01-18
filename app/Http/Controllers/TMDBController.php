@@ -63,6 +63,34 @@ class TMDBController extends Controller
         
     }
 
+    public function search(Request $request)
+    {
+        $apiKey = env('TMDB_API_KEY');
+        $apiBaseUrl = 'https://api.themoviedb.org/3';
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json(['results' => []]);
+        }
+
+        $response = Http::get("{$apiBaseUrl}/search/multi", [
+            'api_key' => $apiKey,
+            'language' => 'en-US',
+            'query' => $query,
+            'page' => 1,
+            'include_adult' => false,
+        ]);
+
+        $results = $response->json()['results'];
+        
+        // Filter only movies and TV shows
+        $results = array_filter($results, function($item) {
+            return in_array($item['media_type'], ['movie', 'tv']);
+        });
+
+        return response()->json(['results' => array_values($results)]);
+    }
+
     public function saveRating(Request $request)
     {
         $validated = $request->validate([
