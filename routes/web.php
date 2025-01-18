@@ -42,4 +42,6 @@ Route::get('/detail/{type}/{id}', [TMDBController::class, 'detail'])->name('deta
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/movie-rankings', [RankingController::class, 'getMovieRankings'])->name('movie.rankings');
+
+    Route::get('/series-rankings', [RankingController::class, 'getSeriesRankings'])->name('series.rankings');
 });

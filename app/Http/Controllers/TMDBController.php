@@ -46,7 +46,7 @@ class TMDBController extends Controller
         
         $response = Http::get("{$apiBaseUrl}/{$type}/{$id}", [
             'api_key' => $apiKey,
-            'language' => 'es-ES',
+            'language' => 'en-EU',
         ]);
 
             
@@ -140,10 +140,11 @@ class TMDBController extends Controller
                     'rankable_id' => $tv->id,
                     'rankable_type' => Series::class,  
                 ]);
+                return redirect()->intended('/home');
+            }else {
+                return redirect()->back()->with('message', 'This TV Show has already been ranked!');
             }
     
-    
-            return redirect()->route('home');
         }
 
     }

@@ -71,7 +71,6 @@ const fetchRankings = async () => {
     try {
         const response = await fetch('/movie-rankings')
         rankings.value = await response.json()
-        console.log(rankings.value)
     } catch (error) {
         console.error('Error al obtener los rankings:', error)
     }
@@ -94,8 +93,8 @@ onMounted(() => {
         </header>
         <div class="container mx-auto p-6 flex flex-col flex-grow">
             <h1 class="text-2xl font-bold mb-4 text-maincolor">My Rating Movies</h1>
-            <div v-for="(yearGroup) in moviesByYear" :key="yearGroup.year" class="mb-8">
-                <h2 class="text-xl font-semibold mb-4">{{ yearGroup.year }}</h2>
+            <div v-if="moviesByYear.length > 0" v-for="(yearGroup) in moviesByYear" :key="yearGroup.year" class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4 bg-maincolor text-white p-2 rounded-full w-32 text-center">{{ yearGroup.year }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                     <div v-for="ranking in yearGroup.movies" :key="ranking.id" 
                     class="group relative transition-all duration-300 hover:scale-105 border-2 border-maincolor rounded-xl">
@@ -126,6 +125,9 @@ onMounted(() => {
                     </div>
                     </div>
                 </div>
+            </div>
+            <div class="flex flex-grow items-center justify-center" v-else>
+                <h1 class="text-2xl font-bold text-maincolor">There are no movies yet.</h1>
             </div>
         </div>
     </div>
