@@ -34,16 +34,16 @@ const getRatingImage = (rating) => {
 
 const getRatingColor = (rating) => {
     const colors = {
-        'Eternity': 'bg-yellow-500',
-        'Masterpiece': 'bg-purple-600',
-        'Excellent': 'bg-blue-500',
-        'Great': 'bg-green-500',
-        'Good': 'bg-teal-500',
-        'Decent': 'bg-cyan-500',
-        'Mediocre': 'bg-orange-500',
-        'Boring': 'bg-gray-500',
-        'Trash': 'bg-red-500',
-        'Razzie': 'bg-red-700'
+        'Eternity': 'bg-gradient-to-r from-black via-maincolor to-black',
+        'Masterpiece': 'bg-[#ce9d05]',
+        'Excellent': 'bg-violet-700',
+        'Great': 'bg-sky-400',
+        'Good': 'bg-[#14b475]',
+        'Decent': 'bg-[#a6ff35]',
+        'Mediocre': 'bg-[#e4e100]',
+        'Boring': 'bg-orange-500',
+        'Trash': 'bg-red-300',
+        'Razzie': 'bg-[#ce8144]'
     }
     return colors[rating] || 'bg-gray-300'
 }
@@ -57,7 +57,14 @@ const moviesByYear = computed(() => {
         }
         grouped[year].push(ranking)
     })
-    return grouped
+    
+    // Array to conserve order
+    return Object.entries(grouped)
+        .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
+        .map(([year, movies]) => ({
+            year,
+            movies
+        }))
 })
 
 const fetchRankings = async () => {
@@ -87,10 +94,10 @@ onMounted(() => {
         </header>
         <div class="container mx-auto p-6 flex flex-col flex-grow">
             <h1 class="text-2xl font-bold mb-4 text-maincolor">My Rating Movies</h1>
-            <div v-for="(yearMovies, year) in moviesByYear" :key="year" class="mb-8">
-                <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
+            <div v-for="(yearGroup) in moviesByYear" :key="yearGroup.year" class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">{{ yearGroup.year }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                    <div v-for="ranking in yearMovies" :key="ranking.id" 
+                    <div v-for="ranking in yearGroup.movies" :key="ranking.id" 
                     class="group relative transition-all duration-300 hover:scale-105 border-2 border-maincolor rounded-xl">
                     <!-- Card Container -->
                     <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
